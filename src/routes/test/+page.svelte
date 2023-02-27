@@ -12,7 +12,7 @@
 			container: chartContainer,
 
 			symbol: 'GAU',
-			interval: 'D',
+			interval: 'W',
 			// timeframe: '',
 
 			datafeed: datafeed,
