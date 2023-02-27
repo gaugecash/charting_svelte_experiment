@@ -12,8 +12,8 @@
 			container: chartContainer,
 
 			symbol: 'GAU',
-			interval: 'W',
-			timeframe: '',
+			interval: 'D',
+			// timeframe: '',
 
 			datafeed: datafeed,
 			library_path: '$lib/charting_library/',
