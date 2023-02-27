@@ -64,8 +64,8 @@ export const datafeed: IBasicDataFeed = {
 
 	getBars: async (symbolInfo, resolution, periodParams, onResult, onError) => {
 		console.log(symbolInfo.name);
-		const pair = symbolInfo.name.toLowerCase() + 'usd';
-		const data = await fetch('http://3.138.56.108:8081/' + pair);
+		const symbol = symbolInfo.name.toLowerCase();
+		const data = await fetch('/api/get?crypto=' + symbol);
 		const json = await data.json();
 
 		var bars = [];
