@@ -1,4 +1,6 @@
+import { dataCache } from './atoms';
 import type { IBasicDataFeed, OnReadyCallback } from './charting_library/charting_library';
+import { processSourceRecords, type SourceRecord } from './data';
 
 const config = {
 	supported_resolutions: ['D', 'W', 'M', '3M', 'Y']
@@ -64,28 +66,28 @@ export const datafeed: IBasicDataFeed = {
 
 	getBars: async (symbolInfo, resolution, periodParams, onResult, onError) => {
 		console.log(symbolInfo.name);
+		console.log('trying to recover from cache');
 		const symbol = symbolInfo.name.toLowerCase();
-		const data = await fetch('/api/get?crypto=' + symbol);
-		const json = await data.json();
 
-		var bars = [];
-		for (let i = 1; i < json.length - 1; i++) {
-			const el = json[i];
-			const prev = json[i - 1];
-			const next = json[i + 1];
+		let records: SourceRecord[];
+		const cache = dataCache.get();
+		console.log(typeof cache);
 
-			const time = new Date(el.datetime).getTime();
-			const bar = {
-				time: time, //TradingView requires bar time in ms
-				low: Math.min(prev.close, next.close),
-				high: Math.max(prev.close, next.close),
+		if (cache.has(symbol)) {
+			console.log('There is a cache!');
+			records = cache.get(symbol)!;
+		} else {
+			const data = await fetch('/api/get?crypto=' + symbol);
+			records = await data.json();
 
-				open: el.close,
-				close: el.close
-				// volume: 0
-			};
-			bars.push(bar);
+			cache.set(symbol, records);
+			dataCache.set(cache);
+
+			console.log('Cache saved');
 		}
+
+		const bars = processSourceRecords(records);
+
 		console.log(bars);
 		onResult(bars);
 	},
@@ -96,17 +98,12 @@ export const datafeed: IBasicDataFeed = {
 		onRealtimeCallback,
 		subscribeUID,
 		onResetCacheNeededCallback
-	) => {}
-	// unsubscribeBars: (subscriberUID) => {},
+	) => {},
+	unsubscribeBars: (subscriberUID) => {},
 	//
 	// /* optional methods */
-	// getServerTime: (cb) => {},
-	// calculateHistoryDepth: (resolution, resolutionBack, intervalBack) => {},
-	// getMarks: (symbolInfo, startDate, endDate, onDataCallback, resolution) => {},
-	// getTimeScaleMarks: (symbolInfo, startDate, endDate, onDataCallback, resolution) => {}
+	getServerTime: (cb) => {},
+	calculateHistoryDepth: (resolution, resolutionBack, intervalBack) => {},
+	getMarks: (symbolInfo, startDate, endDate, onDataCallback, resolution) => {},
+	getTimeScaleMarks: (symbolInfo, startDate, endDate, onDataCallback, resolution) => {}
 };
-
-interface SourceRecord {
-	datetime: string;
-	close: number;
-}
