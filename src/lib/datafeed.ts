@@ -66,12 +66,11 @@ export const datafeed: IBasicDataFeed = {
 
 	getBars: async (symbolInfo, resolution, periodParams, onResult, onError) => {
 		console.log(symbolInfo.name);
-		console.log('trying to recover from cache');
+		console.log('Trying to recover from cache');
 		const symbol = symbolInfo.name.toLowerCase();
 
 		let records: SourceRecord[];
 		const cache = dataCache.get();
-		console.log(typeof cache);
 
 		if (cache.has(symbol)) {
 			console.log('There is a cache!');
@@ -88,8 +87,24 @@ export const datafeed: IBasicDataFeed = {
 
 		const bars = processSourceRecords(records);
 
-		console.log(bars);
-		onResult(bars);
+		// console.log(bars);
+		const to = periodParams.to * 1000;
+		const from = periodParams.from * 1000;
+
+		const filtered = bars.filter((el) => {
+			return el.time >= from && el.time <= to;
+		});
+
+		console.log('== INFO ==');
+		console.log('from, to: ', periodParams.from, periodParams.to);
+		console.log('requested: ', periodParams.countBack);
+		console.log('given: ', filtered.length);
+
+		// if (filtered.length == 0) {
+		// 	onResult(bars, { noData: bars.length == 0 });
+		// } else {
+		onResult(filtered, { noData: bars.length == 0 });
+		// }
 	},
 
 	subscribeBars: (
