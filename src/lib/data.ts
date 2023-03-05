@@ -9,7 +9,7 @@ export function processSourceRecords(records: SourceRecord[]): Bar[] {
 	const bars = [];
 	for (let i = 1; i < records.length - 1; i++) {
 		const el = records[i];
-		// const prev = records[i - 1];
+		const prev = records[i - 1];
 		// const next = records[i + 1];
 
 		const time = new Date(el.datetime).getTime();
@@ -18,7 +18,7 @@ export function processSourceRecords(records: SourceRecord[]): Bar[] {
 			low: el.close,
 			high: el.close,
 
-			open: el.close,
+			open: prev.close,
 			close: el.close
 			// volume: 0
 		};
