@@ -6,17 +6,17 @@ export interface SourceRecord {
 }
 
 export function processSourceRecords(records: SourceRecord[]): Bar[] {
-	var bars = [];
+	const bars = [];
 	for (let i = 1; i < records.length - 1; i++) {
 		const el = records[i];
-		const prev = records[i - 1];
-		const next = records[i + 1];
+		// const prev = records[i - 1];
+		// const next = records[i + 1];
 
 		const time = new Date(el.datetime).getTime();
 		const bar = {
 			time: time, //TradingView requires bar time in ms
-			low: Math.min(prev.close, next.close),
-			high: Math.max(prev.close, next.close),
+			low: el.close,
+			high: el.close,
 
 			open: el.close,
 			close: el.close
