@@ -7,7 +7,43 @@ const config = {
 };
 
 // gauusd, eurusd, chfusd, audusd, cadusd, cnyusd, hkdusd, nzdusd, sekusd, krwusd, sgdusd, nokusd, mxnusd, inrusd, rubusd, zarusd, tryusd, brlusd, twdusd, dkkusd, plnusd, thbusd, idrusd, hufusd, czkusd, ilsusd, clpusd, phpusd, copusd, myrusd, ronusd, penusd, arsusd, bgnusd
-const symbols = ['GAU', 'EUR', 'CHF', 'AUD', 'CAD', 'CNY', 'HKD', 'NZD', 'SEK', 'KRW', 'SGD', 'NOK', 'MXN', 'INR', 'RUB', 'ZAR', 'TRY', 'BRL', 'TWD', 'DKK', 'PLN', 'THB', 'IDR', 'HUF', 'CZK', 'ILS', 'CLP', 'PHP', 'COP', 'MYR', 'RON', 'PEN', 'ARS', 'BGN'];
+const symbols = [
+	'GAU',
+	'EUR',
+	'GBP',
+	'CHF',
+	'AUD',
+	'CAD',
+	'CNY',
+	'HKD',
+	'NZD',
+	'SEK',
+	'KRW',
+	'SGD',
+	'NOK',
+	'MXN',
+	'INR',
+	'RUB',
+	'ZAR',
+	'TRY',
+	'BRL',
+	'TWD',
+	'DKK',
+	'PLN',
+	'THB',
+	'IDR',
+	'HUF',
+	'CZK',
+	'ILS',
+	'CLP',
+	'PHP',
+	'COP',
+	'MYR',
+	'RON',
+	'PEN',
+	'ARS',
+	'BGN'
+];
 
 export const datafeed: IBasicDataFeed = {
 	onReady: (cb: OnReadyCallback) => {
