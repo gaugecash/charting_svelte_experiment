@@ -88,14 +88,15 @@ export const datafeed: IBasicDataFeed = {
 			minmov: 1,
 			// 1.738999003 => 1000000000
 			//
-			pricescale: 1000000000,
+			// pricescale: 1000000000,
+			pricescale: 1000000,
 			has_intraday: false,
 			// intraday_multipliers: ["1", "60"],
 			supported_resolution: config.supported_resolutions,
 			volume_precision: 8,
 			data_status: 'streaming'
 		};
-		setTimeout(function () {
+		setTimeout(function() {
 			onSymbolResolvedCallback(symbol_stub);
 			// console.log('Resolving that symbol....', symbol_stub);
 		}, 0);
@@ -109,14 +110,22 @@ export const datafeed: IBasicDataFeed = {
 		let records: SourceRecord[];
 		const cache = dataCache.get();
 
-		if (cache.has(symbol)) {
+		const cacheExpiration = cache.get(symbol) == undefined ? 0 : cache.get(symbol)!.expireEpoch;
+		console.log('cache: ' + cacheExpiration);
+
+		if (cache.has(symbol) && cacheExpiration > Date.now()) {
 			console.log('There is a cache!');
-			records = cache.get(symbol)!;
+			records = cache.get(symbol)!.data;
 		} else {
 			const data = await fetch('/api/get?crypto=' + symbol);
 			records = await data.json();
 
-			cache.set(symbol, records);
+			const obj = {
+				expireEpoch: Date.now() + 1000 * 60 * 60 * 12,
+				data: records,
+			};
+
+			cache.set(symbol, obj);
 			dataCache.set(cache);
 
 			console.log('Cache saved');
@@ -150,12 +159,12 @@ export const datafeed: IBasicDataFeed = {
 		onRealtimeCallback,
 		subscribeUID,
 		onResetCacheNeededCallback
-	) => {},
-	unsubscribeBars: (subscriberUID) => {},
+	) => { },
+	unsubscribeBars: (subscriberUID) => { },
 	//
 	// /* optional methods */
-	getServerTime: (cb) => {},
-	calculateHistoryDepth: (resolution, resolutionBack, intervalBack) => {},
-	getMarks: (symbolInfo, startDate, endDate, onDataCallback, resolution) => {},
-	getTimeScaleMarks: (symbolInfo, startDate, endDate, onDataCallback, resolution) => {}
+	getServerTime: (cb) => { },
+	calculateHistoryDepth: (resolution, resolutionBack, intervalBack) => { },
+	getMarks: (symbolInfo, startDate, endDate, onDataCallback, resolution) => { },
+	getTimeScaleMarks: (symbolInfo, startDate, endDate, onDataCallback, resolution) => { }
 };

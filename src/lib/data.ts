@@ -27,3 +27,4 @@ export function processSourceRecords(records: SourceRecord[]): Bar[] {
 
 	return bars;
 }
+

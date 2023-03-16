@@ -1,7 +1,12 @@
-import { persistentAtom, persistentMap } from '@nanostores/persistent';
+import { persistentAtom } from '@nanostores/persistent';
 import type { SourceRecord } from './data';
 
-export const dataCache = persistentAtom<Map<string, SourceRecord[]>>('data_cache', new Map(), {
+export interface CacheEntry {
+	expireEpoch: number;
+	data: SourceRecord[];
+}
+
+export const dataCache = persistentAtom<Map<string, CacheEntry>>('data_cache_v2', new Map(), {
 	encode: (data) => {
 		return JSON.stringify(Object.fromEntries(data));
 	},
@@ -9,3 +14,5 @@ export const dataCache = persistentAtom<Map<string, SourceRecord[]>>('data_cache
 		return new Map(Object.entries(JSON.parse(json)));
 	}
 });
+
+
