@@ -8,7 +8,7 @@ export const GET = (async ({ url }) => {
 		throw error(400, 'crypto is none');
 	}
 
-	const data = await fetch('http://3.138.56.108:8081/' + crypto + 'usd');
+	const data = await fetch('https://oxr-data-server-mqoo.vercel.app/' + crypto + 'usd');
 	const j = await data.text();
 
 	return new Response(j);
